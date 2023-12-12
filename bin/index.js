@@ -6,5 +6,5 @@ import { Converter } from '../src/index.js'
 const args = new CLI().getArgs();
 const converter = new Converter(args.input, args.output)
 converter.run().then(result => {
-  console.log(result)
+  console.log('Written', result)
 })
