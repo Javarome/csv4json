@@ -16,17 +16,11 @@
     "prebuild": "npm install",
     "build": "rm -Rf dist && cp -R src dist && tsc && cp -R bin dist/bin && cp package*.json dist",
     "test": "npx .",
-    "toJson": "node bin/index.js --input ../thesteps/server/Projects.csv --output projects.json",
-    "toCsv": "node bin/index.js --input projects.json --output projects.csv",
-    "test-one": "node src/test/ToBeDefined.test.js",
     "prepublishOnly": "npm test",
     "publish": "rm -Rf dist && npm run build && cp -R src/* dist && cp -R bin dist && cp package*.* dist && npm publish dist"
   },
   "bin": {
-    "testscript-js": "bin/index.js"
-  },
-  "dependencies": {
-    "glob": "~10.3.10"
+    "csv4json": "bin/index.js"
   },
   "devDependencies": {
     "typescript": "^5.2.2",
