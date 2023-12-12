@@ -14,7 +14,7 @@
   },
   "scripts": {
     "prebuild": "npm install",
-    "build": "rm -Rf dist && cp -R src dist && tsc && cp -R bin dist/bin && cp package*.json dist",
+    "build": "rm -Rf dist && cp -R src dist && tsc && cp -R bin dist/bin && cp README.md dist && cp package*.json dist",
     "test": "echo test",
     "dev": "node bin/index.js -- --input sample.csv",
     "prepublishOnly": "npm test",
