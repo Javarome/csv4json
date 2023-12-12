@@ -2,6 +2,8 @@
 
 Converts CSV to JSON, and vice versa.
 
+Vanilla JS, no dependencies.
+
 ## Setup
 Either install it globally:
 ```
