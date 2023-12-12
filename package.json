@@ -2,7 +2,7 @@
   "name": "@javarome/csv4json",
   "type": "module",
   "author": "Jérôme Beau (javarome@gmail.com)",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Converts CSV to JSON, and vice versa",
   "exports": "./index.js",
   "types": "./index.d.ts",
@@ -15,7 +15,7 @@
   "scripts": {
     "prebuild": "npm install",
     "build": "rm -Rf dist && cp -R src dist && tsc && cp -R bin dist/bin && cp package*.json dist",
-    "test": "npx . --inputFile ss",
+    "test": "echo test",
     "dev": "node bin/index.js -- --input sample.csv",
     "prepublishOnly": "npm test",
     "publish": "rm -Rf dist && npm run build && cp -R src/* dist && cp -R bin dist && cp package*.* dist && npm publish dist"
