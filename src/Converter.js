@@ -4,11 +4,34 @@ import path from 'node:path'
 import assert from 'node:assert'
 
 export class Converter {
+  /**
+   * @member {string}
+   */
   #input
+
+  /**
+   * @member {string}
+   */
   #output
+
+  /**
+   * @member {string[]}
+   */
   #fields
+
+  /**
+   * @member {string}
+   */
   #separator
-  #lineFeed = '\r\n'
+
+  /**
+   * @member {string}
+   */
+  #lineFeed
+
+  /**
+   * @member {boolean}
+   */
   #inputCsv
 
   /**
@@ -16,8 +39,9 @@ export class Converter {
    * @param {string} input
    * @param {string} output
    * @param {string} separator
+   * @param {string} lineFeed
    */
-  constructor (input, output, separator = ',') {
+  constructor (input, output, separator = ',', lineFeed = '\r\n') {
     assert.ok(input, '--input <csv or json file> expected')
     this.#input = input
     const ext = path.extname(input)
@@ -28,6 +52,8 @@ export class Converter {
       this.#output = input.replace(/\.\w+$/, this.#inputCsv ? '.json' : '.csv')
     }
     this.#separator = separator
+    this.#lineFeed = lineFeed
+    this.regex = new RegExp(`(?:\\s*"([^"]+)"\\s*)|([^"${this.#separator}]+)`, 'g')
   }
 
   async run () {
@@ -38,7 +64,7 @@ export class Converter {
       async function * (source) {
         source.setEncoding('utf8')  // Work with strings rather than `Buffer`s.
         for await (const chunk of source) {
-          yield await processChunk(chunk)
+          yield processChunk(chunk)
         }
       },
       fs.createWriteStream(this.#output)
@@ -46,7 +72,7 @@ export class Converter {
     return path.resolve(this.#output)
   }
 
-  async jsonToCsv (chunk) {
+  jsonToCsv (chunk) {
     const objs = JSON.parse(chunk)
     let header = ''
     if (!this.#fields) {
@@ -58,17 +84,43 @@ export class Converter {
       .join(this.#lineFeed)
   }
 
-  async csvToJson (chunk) {
+  csvToJson (chunk) {
+    const arr = this.csvToArray(chunk)
+    return JSON.stringify(arr)
+  }
+
+  csvToArray (chunk) {
     const lines = chunk.split(this.#lineFeed)
     if (!this.#fields) {
-      this.#fields = lines.splice(0, 1)[0].split(this.#separator)
+      this.#fields = this.parse(lines.splice(0, 1)[0])
     }
     const arr = []
     for (const line of lines) {
-      const values = line.split(this.#separator)
+      const values = this.parse(line)
       const entries = this.#fields.map((field, i) => [field, values[i]])
       arr.push(Object.fromEntries(entries))
     }
-    return JSON.stringify(arr)
+    return arr
+  }
+
+  /**
+   * @param {string} line
+   * @return {string[]}
+   */
+  parse(line) {
+    const values = []
+    let m;
+    while ((m = this.regex.exec(line)) !== null) {
+      // This is necessary to avoid infinite loops with zero-width matches
+      if (m.index === this.regex.lastIndex) {
+        this.regex.lastIndex++;
+      }
+      // The result can be accessed through the `m`-variable.
+      m.forEach((match, groupIndex) => {
+        if (groupIndex && match)
+          values.push(match);
+      });
+    }
+    return values
   }
 }
