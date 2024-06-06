@@ -1,6 +1,6 @@
 import test, { beforeEach, describe } from 'node:test'
 import assert from 'node:assert'
-import { Converter } from './Converter.js'
+import { Converter } from './Converter.mjs'
 
 describe('Converter', () => {
 
@@ -8,7 +8,7 @@ describe('Converter', () => {
 
     let converter
     beforeEach(() => {
-      converter = new Converter('../test/input.csv', '/test/output.json', ',', '\n')
+      converter = new Converter('../test/input.csv', '../test/output.json', ',', '\n')
     })
 
     test('basic values', async () => {

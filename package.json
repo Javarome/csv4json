@@ -2,7 +2,7 @@
   "name": "@javarome/csv4json",
   "type": "module",
   "author": "Jérôme Beau (javarome@gmail.com)",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Converts CSV to JSON, and vice versa",
   "exports": "./index.js",
   "types": "./index.d.ts",
@@ -13,19 +13,18 @@
     "url": "git+https://github.com/Javarome/csv4json.git"
   },
   "scripts": {
-    "prebuild": "npm install",
-    "build": "rm -Rf dist && cp -R src dist && tsc && cp -R bin dist/bin && cp README.md dist && cp package*.json dist",
-    "test": "node --test src/**/*.test.js src/*.test.js",
-    "dev": "node bin/index.js -- --input sample.csv",
-    "prepublishOnly": "npm test",
-    "publish": "npm run build && cp -R bin dist && npm publish dist"
+    "prebuild": "npm install && npm test",
+    "build": "rm -Rf dist && cp -R src dist && tsc && cp README.md dist && cp package*.json dist",
+    "test": "node --test src/**/*.test.mjs src/*.test.mjs",
+    "dev": "node src/cli/index.mjs -- --input test/input.csv",
+    "publish": "npm run build && cd dist && npm publish && cd .."
   },
   "bin": {
-    "csv4json": "bin/index.js"
+    "csv4json": "cli/index.js"
   },
   "devDependencies": {
-    "typescript": "^5.2.2",
-    "@types/node": "^20.9.3"
+    "@types/node": "^20.9.3",
+    "typescript": "^5.2.2"
   },
   "keywords": [
     "csv",
@@ -35,5 +34,8 @@
   ],
   "publishConfig": {
     "access": "public"
+  },
+  "dependencies": {
+    "@javarome/csv4json": "^0.1.5"
   }
 }

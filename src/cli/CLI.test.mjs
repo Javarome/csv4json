@@ -1,6 +1,6 @@
 import test, { describe } from 'node:test'
 import assert from 'node:assert'
-import { CLI } from './CLI.js';
+import { CLI } from './CLI.mjs';
 
 /**
  * Testing files spec.
