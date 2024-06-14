@@ -3,7 +3,7 @@ import { pipeline } from "node:stream/promises"
 import path from "node:path"
 import assert from "node:assert"
 
-export class Converter {
+export class Csv4Json {
   /**
    * @member {string}
    */
@@ -53,7 +53,7 @@ export class Converter {
     }
     this.#separator = separator
     this.#lineFeed = lineFeed
-    this.regex = new RegExp(`(?:\\s*"([^"]+)"\\s*)|([^"${this.#separator}]+)`, "g")
+    this.regex = new RegExp(`("(?:[^"]|"")*"|[^${this.#separator}]*)`, "g")
   }
 
   async run () {
@@ -89,16 +89,31 @@ export class Converter {
     return JSON.stringify(arr)
   }
 
-  csvToArray (chunk) {
-    const lines = chunk.split(this.#lineFeed)
+  /**
+   *
+   * @param {string} str
+   * @return {string}
+   */
+  unquote(str) {
+    const end = str.length - 1
+    return str.charAt(0) === '"' && str.charAt(end) === '"' ? str.substring(1, end) : str
+  }
+  /**
+   *
+   * @param {string} csvContents The CSV lines, separated by \n
+   * @return {object[]}
+   */
+  csvToArray (csvContents) {
+    const lines = csvContents.split(this.#lineFeed)
     if (!this.#fields) {
       this.#fields = this.parse(lines.splice(0, 1)[0])
     }
+    /** @type {object[]} */
     const arr = []
     for (const line of lines) {
       if (line.trim()) {
         const values = this.parse(line)
-        const entries = this.#fields.map((field, i) => [field, values[i]])
+        const entries = this.#fields.map((field, i) => [this.unquote(field), this.unquote(values[i])])
         arr.push(Object.fromEntries(entries))
       }
     }

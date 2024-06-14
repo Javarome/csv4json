@@ -1,14 +1,14 @@
 import test, { beforeEach, describe } from 'node:test'
 import assert from 'node:assert'
-import { Converter } from './Converter.mjs'
+import { Csv4Json } from './Csv4Json.mjs'
 
-describe('Converter', () => {
+describe('Csv4Json', () => {
 
   describe('CSV to Array', () => {
 
     let converter
     beforeEach(() => {
-      converter = new Converter('../test/input.csv', '../test/output.json', ',', '\n')
+      converter = new Csv4Json('../test/input.csv', '../test/output.json', ',', '\n')
     })
 
     test('basic values', async () => {
@@ -34,6 +34,15 @@ ${value1},${value2}`), [{ [field1]: value1, [field2]: value2 }])
       const field2 = 'second field, with comma'
       const value1 = 'first value, with comma'
       const value2 = 'second value, with comma'
+      assert.deepEqual(converter.csvToArray(`"${field1}","${field2}"
+"${value1}","${value2}"`), [{ [field1]: value1, [field2]: value2 }])
+    })
+
+    test('with quotes', async () => {
+      const field1 = "first field"
+      const field2 = 'second field, with ""quotes""'
+      const value1 = 'first value, <a href=""/user"">with quotes</a>!'
+      const value2 = 'second value, with ""quotes""'
       assert.deepEqual(converter.csvToArray(`"${field1}","${field2}"
 "${value1}","${value2}"`), [{ [field1]: value1, [field2]: value2 }])
     })

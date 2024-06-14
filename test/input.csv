@@ -2,3 +2,4 @@ field1,field2
 value11,value12
 value with spaces,"value with spaces"
 value without a comma,"value, with a comma"
+projectDescription,"This is <a href=""/user"">a link</a>!"

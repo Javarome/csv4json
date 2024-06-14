@@ -2,7 +2,7 @@
   "name": "@javarome/csv4json",
   "type": "module",
   "author": "Jérôme Beau (javarome@gmail.com)",
-  "version": "0.1.5",
+  "version": "1.0.0",
   "description": "Converts CSV to JSON, and vice versa",
   "exports": "./index.js",
   "types": "./index.d.ts",
@@ -30,12 +30,9 @@
     "csv",
     "json",
     "conversion",
-    "converster"
+    "converter"
   ],
   "publishConfig": {
     "access": "public"
-  },
-  "dependencies": {
-    "@javarome/csv4json": "^0.1.5"
   }
 }
