@@ -94,10 +94,16 @@ export class Csv4Json {
    * @param {string} str
    * @return {string}
    */
-  unquote(str) {
+  unquote (str) {
     const end = str.length - 1
-    return str.charAt(0) === '"' && str.charAt(end) === '"' ? str.substring(1, end) : str
+    let quoted = str.charAt(0) === "\"" && str.charAt(end) === "\""
+    if (quoted) {
+      str = str.substring(1, end)
+      str = str.replaceAll("\"\"", "\"")
+    }
+    return str
   }
+
   /**
    *
    * @param {string} csvContents The CSV lines, separated by \n
